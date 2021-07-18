@@ -1,0 +1,38 @@
+version: '3'
+services:
+  beverage:
+    build: Beverage-Service
+
+    ports:
+      - "8080:8080"
+    networks:
+      - a-net
+    depends_on:
+      - "db"
+    environment:
+      - SERVER_URI=http://localhost:8080/
+      - DB_HANDLER_URI=http://db:9999/v1/
+      
+  management:
+    build: Management-Service
+
+    ports:
+      - "8090:8090"
+    networks:
+      - a-net
+    depends_on:
+      - "db"
+    environment:
+      - SERVER_URI=http://localhost:8090/
+      - DB_HANDLER_URI=http://db:9999/v1/
+
+  db:
+    build: DB-Handler
+    networks:
+      - a-net
+    environment:
+      - SERVER_URI=http://localhost:9999/v1
+
+networks:
+  a-net:
+    driver: bridge
